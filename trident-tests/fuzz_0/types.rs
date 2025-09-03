@@ -34,14 +34,26 @@ pub struct BaseFeeParameters {
     pub base_fee_mode: u8,
 }
 
-#[derive(Debug, BorshDeserialize, BorshSerialize, Clone, Default)]
+#[derive(Debug, BorshDeserialize, BorshSerialize, Clone)]
 pub struct ClaimFeeOperator {
     pub operator: TridentPubkey,
 
+    //pub _padding: [u8; 128], - ошибка компиляции не может по дефолту заполнить массив 0, т.к. по умолчанию реализовано только для массивов из 32 элементов
     pub _padding: [u8; 128],
 }
 
-#[derive(Debug, BorshDeserialize, BorshSerialize, Clone, Default)]
+impl Default for ClaimFeeOperator {
+    fn default() -> Self {
+        Self {
+            operator: TridentPubkey::default(),
+            // _padding: array::from_fn(|_| 0), - сложная реализация с заполнением через лямбду функцию
+            _padding: [0; 128],
+        }
+    }
+}
+
+
+#[derive(Debug, BorshDeserialize, BorshSerialize, Clone)]
 pub struct Config {
     pub pool_fees: PoolFees,
 
@@ -55,7 +67,22 @@ pub struct Config {
 
     pub partner_fee_numerator: u64,
 
-    pub padding: [u8; 219],
+    // pub padding: [u8; 219], - ошибка компиляции не может по дефолту заполнить массив 0, т.к. по умолчанию реализовано только для массивов из 32 элементов
+    pub _padding: [u8; 219],
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            pool_fees: PoolFees::default(),           // Используем Default для PoolFees
+            activation_duration: 0,                   // u64 по умолчанию = 0
+            vault_config_key: TridentPubkey::default(), // Default для публичного ключа
+            pool_creator_authority: TridentPubkey::default(), // Default для публичного ключа
+            activation_type: 0,                       // u8 по умолчанию = 0
+            partner_fee_numerator: 0,                 // u64 по умолчанию = 0
+            _padding: [0; 219],                       // Массив из 219 нулевых байт не может быть заполнен с помощью типовых макросов Rust
+        }
+    }
 }
 
 #[derive(Debug, BorshDeserialize, BorshSerialize, Clone, Default)]
@@ -103,9 +130,10 @@ pub struct ConfigParameters {
     pub curve: Vec<LiquidityDistributionParameters>,
 }
 
-#[derive(Debug, BorshDeserialize, BorshSerialize, Clone, Default)]
+#[derive(Debug, BorshDeserialize, BorshSerialize, Clone)]
 pub struct CreatePartnerMetadataParameters {
-    pub padding: [u8; 96],
+    // pub padding: [u8; 96], - ошибка компиляции не может по дефолту заполнить массив 0, т.к. по умолчанию реализовано только для массивов из 32 элементов
+    pub _padding: [u8; 96],
 
     pub name: String,
 
@@ -114,15 +142,38 @@ pub struct CreatePartnerMetadataParameters {
     pub logo: String,
 }
 
-#[derive(Debug, BorshDeserialize, BorshSerialize, Clone, Default)]
+impl Default for CreatePartnerMetadataParameters {
+    fn default() -> Self {
+        Self {
+            _padding: [0; 96],        // Инициализируем массив нулями
+            name: String::new(),      // Пустая строка по умолчанию
+            website: String::new(),   // Пустая строка по умолчанию
+            logo: String::new(),      // Пустая строка по умолчанию
+        }
+    }
+}
+
+#[derive(Debug, BorshDeserialize, BorshSerialize, Clone)]
 pub struct CreateVirtualPoolMetadataParameters {
-    pub padding: [u8; 96],
+    // pub padding: [u8; 96], - ошибка компиляции не может по дефолту заполнить массив 0, т.к. по умолчанию реализовано только для массивов из 32 элементов
+    pub _padding: [u8; 96],
 
     pub name: String,
 
     pub website: String,
 
     pub logo: String,
+}
+
+impl Default for CreateVirtualPoolMetadataParameters {
+    fn default() -> Self {
+        Self {
+            _padding: [0; 96],        // Инициализируем массив нулями
+            name: String::new(),      // Пустая строка по умолчанию
+            website: String::new(),   // Пустая строка по умолчанию
+            logo: String::new(),      // Пустая строка по умолчанию
+        }
+    }
 }
 
 #[derive(Debug, BorshDeserialize, BorshSerialize, Clone, Default)]
@@ -485,7 +536,7 @@ pub struct LockedVestingParams {
     pub cliff_unlock_amount: u64,
 }
 
-#[derive(Debug, BorshDeserialize, BorshSerialize, Clone, Default)]
+#[derive(Debug, BorshDeserialize, BorshSerialize, Clone)]
 pub struct MeteoraDammMigrationMetadata {
     pub virtual_pool: TridentPubkey,
 
@@ -513,10 +564,32 @@ pub struct MeteoraDammMigrationMetadata {
 
     pub partner_claim_status: u8,
 
+    //pub _padding: [u8; 107], - ошибка компиляции не может по дефолту заполнить массив 0, т.к. по умолчанию реализовано только для массивов из 32 элементов
     pub _padding: [u8; 107],
 }
 
-#[derive(Debug, BorshDeserialize, BorshSerialize, Clone, Default)]
+impl Default for MeteoraDammMigrationMetadata {
+    fn default() -> Self {
+        Self {
+            virtual_pool: TridentPubkey::default(),
+            padding_0: [0; 32],
+            partner: TridentPubkey::default(),
+            lp_mint: TridentPubkey::default(),
+            partner_locked_lp: 0,
+            partner_lp: 0,
+            creator_locked_lp: 0,
+            creator_lp: 0,
+            _padding_0: 0,
+            creator_locked_status: 0,
+            partner_locked_status: 0,
+            creator_claim_status: 0,
+            partner_claim_status: 0,
+            _padding: [0; 107], // Ручная инициализация массива
+        }
+    }
+}
+
+#[derive(Debug, BorshDeserialize, BorshSerialize, Clone)]
 pub struct MeteoraDammV2Metadata {
     pub virtual_pool: TridentPubkey,
 
@@ -524,7 +597,19 @@ pub struct MeteoraDammV2Metadata {
 
     pub partner: TridentPubkey,
 
+    // pub _padding: [u8; 126], - ошибка компиляции не может по дефолту заполнить массив 0, т.к. по умолчанию реализовано только для массивов из 32 элементов
     pub _padding: [u8; 126],
+}
+
+impl Default for MeteoraDammV2Metadata {
+    fn default() -> Self {
+        Self {
+            virtual_pool: TridentPubkey::default(),
+            padding_0: [0; 32],
+            partner: TridentPubkey::default(), 
+            _padding: [0; 126], // Ручная инициализация большого массива
+        }
+    }
 }
 
 #[derive(Debug, BorshDeserialize, BorshSerialize, Clone, Default)]
