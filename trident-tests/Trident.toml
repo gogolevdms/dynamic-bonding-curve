@@ -1,0 +1,8 @@
+[fuzz.metrics]
+enabled = true
+
+
+[[fuzz.programs]]
+address = "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN"
+program = "../target/deploy/dynamic_bonding_curve.so"
+ 
